@@ -2,43 +2,15 @@
 
 **One RN app with two user roles became two apps on both stores, sharing a 64-file package. Here is what broke, in the order it broke.**
 
-<svg width="540" height="280" viewBox="0 0 540 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A file in shared resolves the zustand import upward into repo-root/node_modules, while a file in app-customer resolves the same specifier into app-customer/node_modules. Both resolutions succeed and the app ends up with two instances of the module.">
-  <title>One import specifier, two resolutions, two module instances</title>
-
-  <rect x="10" y="20" width="226" height="58" rx="6" fill="none" stroke="#8b949e" stroke-width="1.25"/>
-  <text x="24" y="45" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="#6e7681">shared/src/store/authStore.ts</text>
-  <text x="24" y="64" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" font-size="10" fill="#6e7681">source lives at repo-root/shared</text>
-
-  <text x="270" y="42" text-anchor="middle" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" font-size="9.5" fill="#6e7681">walks up</text>
-  <line x1="242" y1="49" x2="289" y2="49" stroke="#8b949e" stroke-width="1.5"/>
-  <polygon points="298,49 288,44 288,54" fill="#8b949e"/>
-
-  <rect x="304" y="20" width="226" height="58" rx="6" fill="none" stroke="#d95f02" stroke-width="1.25"/>
-  <text x="318" y="43" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="#6e7681">repo-root/node_modules/</text>
-  <text x="318" y="66" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="600" fill="#d95f02">zustand</text>
-
-  <line x1="417" y1="82" x2="417" y2="124" stroke="#8b949e" stroke-width="1.25" stroke-dasharray="4 4"/>
-  <text x="417" y="149" text-anchor="middle" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" font-size="20" fill="#d95f02">&#8800;</text>
-  <line x1="417" y1="158" x2="417" y2="172" stroke="#8b949e" stroke-width="1.25" stroke-dasharray="4 4"/>
-
-  <text x="397" y="126" text-anchor="end" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" font-size="10" fill="#6e7681">different directory,</text>
-  <text x="397" y="142" text-anchor="end" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" font-size="10" fill="#6e7681">different module,</text>
-  <text x="397" y="158" text-anchor="end" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" font-size="10" fill="#d95f02">no error raised</text>
-
-  <rect x="10" y="176" width="226" height="58" rx="6" fill="none" stroke="#8b949e" stroke-width="1.25"/>
-  <text x="24" y="201" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="#6e7681">app-customer/src/App.tsx</text>
-  <text x="24" y="220" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" font-size="10" fill="#6e7681">source lives inside the app</text>
-
-  <text x="270" y="198" text-anchor="middle" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif" font-size="9.5" fill="#6e7681">walks up</text>
-  <line x1="242" y1="205" x2="289" y2="205" stroke="#8b949e" stroke-width="1.5"/>
-  <polygon points="298,205 288,200 288,210" fill="#8b949e"/>
-
-  <rect x="304" y="176" width="226" height="58" rx="6" fill="none" stroke="#d95f02" stroke-width="1.25"/>
-  <text x="318" y="199" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="#6e7681">app-customer/node_modules/</text>
-  <text x="318" y="222" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="600" fill="#d95f02">zustand</text>
-
-  <text x="270" y="262" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="#6e7681">both files contain:  import { create } from 'zustand'</text>
-</svg>
+```mermaid
+flowchart BT
+  N["both files contain<br/>import { create } from 'zustand'"] --- A
+  N --- C
+  A["shared/src/store/authStore.ts"] -->|walks up| B["repo-root/node_modules<br/>zustand"]
+  C["app-customer/src/App.tsx"] -->|walks up| D["app-customer/node_modules<br/>zustand"]
+  B --> E["different modules<br/>no error raised"]
+  D --> E
+```
 
 Metro resolves a file's imports from that file's own location. The shared file and the app file walk up into different `node_modules` trees, both lookups succeed, and nothing is logged. The app now holds two copies of a module that only works as one. [Doc 02](docs/02-metro-duplicate-instances.md) is entirely about this.
 
