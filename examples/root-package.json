@@ -1,0 +1,14 @@
+{
+  "name": "repo-root",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Note what is NOT in workspaces: neither RN app is a member, so RN build tooling never hoists to the root. Each app is standalone with its own complete node_modules and pulls the shared package in as file:../shared.",
+  "workspaces": [
+    "shared",
+    "backend",
+    "web"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

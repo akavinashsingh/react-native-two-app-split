@@ -1,0 +1,37 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "types": ["jest"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+
+      "@org/shared": ["../shared/src"],
+      "@org/shared/*": ["../shared/src/*"],
+
+      "react": ["node_modules/@types/react", "node_modules/react"],
+      "react/*": ["node_modules/@types/react/*", "node_modules/react/*"],
+      "react-native": ["node_modules/react-native"],
+      "react-native/*": ["node_modules/react-native/*"],
+      "axios": ["node_modules/axios"],
+      "zustand": ["node_modules/zustand"],
+      "zustand/*": ["node_modules/zustand/*"],
+      "react-native-safe-area-context": ["node_modules/react-native-safe-area-context"],
+      "react-native-vector-icons/*": [
+        "node_modules/@types/react-native-vector-icons/*",
+        "node_modules/react-native-vector-icons/*"
+      ],
+      "@react-native-async-storage/async-storage": [
+        "node_modules/@react-native-async-storage/async-storage"
+      ],
+      "@react-native-community/geolocation": [
+        "node_modules/@react-native-community/geolocation"
+      ],
+      "@react-native-firebase/crashlytics": [
+        "node_modules/@react-native-firebase/crashlytics"
+      ]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["**/node_modules", "**/Pods"]
+}
