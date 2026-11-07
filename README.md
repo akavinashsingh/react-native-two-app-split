@@ -69,6 +69,4 @@ A shared package in a monorepo is not a library. A published library gets instal
 - Not pnpm or Yarn Berry. Their linking strategies change which of these bugs you get, not whether you get them.
 - Not a template to clone. It is a set of decisions with the reasoning attached, so you can tell which ones apply to you.
 
-## Lice
 
-M
